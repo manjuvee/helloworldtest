@@ -1,0 +1,20 @@
+
+{{- if  contains "openshift" (lower .Values.cluster.type) -}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    haproxy.router.openshift.io/disable_cookies: 'true'
+    haproxy.router.openshift.io/hsts_header: max-age=31536000
+spec:
+  path: /
+  to:
+    kind: Service
+    name: {{ .Release.Name }}
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+{{- end }}
